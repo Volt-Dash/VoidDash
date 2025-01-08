@@ -29,7 +29,7 @@ Ubuntu 22.04 - 20.04 ✅
   - reopen a new ssh session (eg restart putty)
   - `nvm install 18`
   - check the node version with `node -v`
-  - git clone https://github.com/VoidDash/VoidDash.git `/var/www/voiddash`
+  - git clone https://github.com/Volt-Dash/VoidDash/tree/main/VoidDash-Main `/var/www/voiddash`
   - Run `/var/www/voiddash && npm i`
   - To run VoidDash, use `node .`
   - To Running in background, use `npm install pm2 -g` after that `cd /var/www/voiddash && pm2 start .`
