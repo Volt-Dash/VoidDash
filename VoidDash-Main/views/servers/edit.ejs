@@ -1,0 +1,90 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= settings.name %>
+  </title>
+</head>
+
+<body class="bg-gray-50 font-sans antialiased">
+  <div class="flex flex-col min-h-screen">
+    <%- include('../components/navigation') %>
+
+    <div class="flex-1 container mx-auto px-6 py-10">
+      <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+          Edit Server Resources
+        </h2>
+
+        <% let ram=0, disk=0, cpu=0; let servers=pterodactyl.relationships.servers.data.length; 
+           for (let i = 0, len = servers; i < len; i++) {
+             ram += pterodactyl.relationships.servers.data[i].attributes.limits.memory || 0;
+             disk += pterodactyl.relationships.servers.data[i].attributes.limits.disk || 0;
+             cpu += pterodactyl.relationships.servers.data[i].attributes.limits.cpu || 0;
+           } %>
+
+        <% if (req.query.id) { %>
+          <% let serverinfo = pterodactyl.relationships.servers.data.find(server => server.attributes.id == req.query.id);
+             if (serverinfo) {
+               let egginfo = settings.api.client.eggs[serverinfo.attributes.egg]?.display || "Unknown";
+          %>
+
+            <div class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="ram" class="block text-sm font-medium text-gray-700">RAM (GB)</label>
+                  <input type="number" id="ram" class="mt-2 p-3 w-full border rounded-md text-sm text-gray-800" value="<%= serverinfo.attributes.limits.memory / 1024 %>" required>
+                </div>
+
+                <div>
+                  <label for="cpu" class="block text-sm font-medium text-gray-700">CPU (Core)</label>
+                  <input type="number" id="cpu" class="mt-2 p-3 w-full border rounded-md text-sm text-gray-800" value="<%= serverinfo.attributes.limits.cpu / 100 %>" required>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="disk" class="block text-sm font-medium text-gray-700">Disk (GB)</label>
+                  <input type="number" id="disk" class="mt-2 p-3 w-full border rounded-md text-sm text-gray-800" value="<%= serverinfo.attributes.limits.disk / 1024 %>" required>
+                </div>
+
+                <div>
+                  <label for="egg" class="block text-sm font-medium text-gray-700">Software</label>
+                  <input type="text" id="egg" class="mt-2 p-3 w-full border rounded-md text-sm text-gray-800" value="<%= egginfo %>" disabled>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <button onclick="submitForm()" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  Apply Changes
+                </button>
+                <%- include('../components/buttons/primary.ejs', { href: '../delete?id=' + req.query.id, text: 'Delete Server' }) %>
+              </div>
+            </div>
+
+            <script>
+              async function submitForm() {
+                let ram = encodeURIComponent(document.getElementById("ram").value);
+                let disk = encodeURIComponent(document.getElementById("disk").value);
+                let cpu = encodeURIComponent(document.getElementById("cpu").value);
+                document.location.href = `/modify?id=<%= req.query.id %>&ram=${ram * 1024}&disk=${disk * 1024}&cpu=${cpu * 100}`;
+              }
+            </script>
+          
+          <% } else { %>
+            <div class="text-center">
+              <p class="text-lg text-gray-700">Could not find server with the provided ID.</p>
+            </div>
+          <% } %>
+        <% } else { %>
+          <div class="text-center">
+            <p class="text-lg text-gray-700">Missing server ID.</p>
+          </div>
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+
+  <%- include('../components/style') %>
+</body>

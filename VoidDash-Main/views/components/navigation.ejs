@@ -1,0 +1,206 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+  <link rel="shortcut icon" href="/assets/favicon.png" type="favicon">
+  <style>
+    body {
+      background-color: #f7f8fa;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .sidebar {
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #4A4A4A;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover {
+      background-color: #E6F1FF;
+      color: #4A90E2;
+    }
+
+    .sidebar .nav-link i {
+      font-size: 22px;
+      margin-right: 15px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-header img {
+      height: 40px;
+      margin-right: 15px;
+    }
+
+    .sidebar-header span {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2C3E50;
+    }
+
+    .sidebar-toggle {
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
+      color: #4A4A4A;
+      cursor: pointer;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-toggle:hover {
+      background-color: #E6F1FF;
+    }
+
+    .btn-primary {
+      background-color: #4A90E2;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      display: block;
+      width: 100%;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .btn-primary:hover {
+      background-color: #357ABD;
+    }
+
+    .modal-content {
+      display: block;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .modal-content.visible {
+      opacity: 1;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-header {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="sidebar-toggle" class="sidebar-toggle">
+    <i class='bx bx-menu'></i>
+  </button>
+
+  <aside id="default-sidebar" class="sidebar fixed top-0 left-0 w-64 h-screen bg-white border-r z-50 sm:translate-x-0 transform transition-transform">
+    <div class="sidebar-header">
+      <a href="/" class="flex items-center justify-center">
+        <img src="/assets/favicon.png" alt="Logo" />
+        <span><%= settings.name %></span>
+      </a>
+    </div>
+
+    <ul class="text-[#1f1f1f] space-y-4">
+      <% if (settings.api.client.accountSwitcher !== true) { %>
+        <li>
+          <a href="../security" class="transition-all duration-300 flex items-center p-4 rounded-lg hover:bg-blue-100 hover:text-blue-700">
+            <i class="bx bx-key"></i>
+            <span class="ml-3">Account Settings</span>
+          </a>
+        </li>
+      <% } %>
+
+      <li>
+        <a href="../dashboard" class="nav-link">
+          <i class="bx bx-home"></i>
+          <span>Home</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="../servers" class="nav-link">
+          <i class="bx bx-server"></i>
+          <span>Servers</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="../store" class="nav-link">
+          <i class="bx bx-cart"></i>
+          <span>Shop</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="../afk" class="nav-link">
+          <i class="bx bx-coin"></i>
+          <span>Earn</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="../security" class="nav-link">
+          <i class="bx bx-shield-alt"></i>
+          <span>Security</span>
+        </a>
+      </li>
+
+      <li>
+        <a target="_blank" href="<%= settings.support %>" class="nav-link">
+          <i class="bx bx-support"></i>
+          <span>Support</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="../logout" class="nav-link">
+          <i class="bx bx-exit"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+
+    <a href="../servers/new" class="btn-primary">Create a Server</a>
+  </aside>
+
+  <script>
+    document.getElementById('sidebar-toggle').addEventListener('click', function () {
+      document.getElementById('default-sidebar').classList.toggle('open');
+    });
+  </script>
+</body>

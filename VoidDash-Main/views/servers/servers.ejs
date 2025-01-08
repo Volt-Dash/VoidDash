@@ -1,0 +1,170 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= settings.name %></title>
+</head>
+
+<body class="bg-gray-100 font-sans antialiased">
+
+  <%- include('../components/navigation') %>
+  
+  <div class="container mx-auto px-6 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center">
+        <div class="bg-blue-600 text-white rounded-full p-3 mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+            <path d="M5 5a2 2 0 0 0-2 2v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H5Zm9 2a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H14Zm3 0a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17ZM3 17v-3a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm11-2a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H14Zm3 0a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-800">Servers</h1>
+          <p class="text-sm text-gray-500">View and manage your servers</p>
+        </div>
+      </div>
+    </div>
+
+    <% if (req.query.err && req.query.err == "CREATED") { %>
+      <div class="alert alert-success mb-4">
+        <span class="text-green-700">Server Created Successfully!</span>
+        <button class="alert-close" data-dismiss="#alert-3">×</button>
+      </div>
+    <% } %>
+    
+    <% if (req.query.err && req.query.err == "MODIFIED") { %>
+      <div class="alert alert-success mb-4">
+        <span class="text-green-700">Server Resources Updated!</span>
+        <button class="alert-close" data-dismiss="#alert-3">×</button>
+      </div>
+    <% } %>
+
+    <% if (req.query.err && req.query.err == "DELETED") { %>
+      <div class="alert alert-error mb-4">
+        <span class="text-red-700">Server Deleted!</span>
+        <button class="alert-close" data-dismiss="#alert-3">×</button>
+      </div>
+    <% } %>
+
+    <% if (pterodactyl.relationships.servers.data.length == 0) { %>
+      <div class="text-center">
+        <img src="/assets/empty.png" alt="No servers" class="mx-auto h-40 w-40 mb-4">
+        <h3 class="text-lg font-semibold text-gray-700">No servers available</h3>
+        <p class="text-sm text-gray-500">Create your first server to get started.</p>
+        <a href="../servers/new" class="btn btn-primary mt-4">Create a Server</a>
+      </div>
+    <% } else { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
+          <div class="server-card bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="text-xl font-semibold text-gray-800 truncate">
+                  <%= pterodactyl.relationships.servers.data[i].attributes.name.length > 40 ? pterodactyl.relationships.servers.data[i].attributes.name.slice(0, 40) + "..." : pterodactyl.relationships.servers.data[i].attributes.name %>
+                </h2>
+                <p class="text-sm text-gray-500">
+                  <%= pterodactyl.relationships.servers.data[i].attributes.identifier %>
+                </p>
+              </div>
+              <div class="flex space-x-2">
+                <a href="../panel" class="btn btn-secondary">Panel</a>
+                <a href="../edit?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>" class="btn btn-tertiary">Modify</a>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+              <div>
+                <h4 class="text-sm font-medium text-gray-600">CPU Cores</h4>
+                <p class="text-xl font-light text-gray-800">
+                  <%= pterodactyl.relationships.servers.data[i].attributes.limits.cpu / 100 %>
+                </p>
+              </div>
+              <div>
+                <h4 class="text-sm font-medium text-gray-600">Memory</h4>
+                <p class="text-xl font-light text-gray-800">
+                  <%= pterodactyl.relationships.servers.data[i].attributes.limits.memory / 1024 %> GiB
+                </p>
+              </div>
+              <div>
+                <h4 class="text-sm font-medium text-gray-600">Storage</h4>
+                <p class="text-xl font-light text-gray-800">
+                  <%= pterodactyl.relationships.servers.data[i].attributes.limits.disk / 1024 %> GiB
+                </p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (pterodactyl.relationships.servers.data.length == 1) { %>
+      <div class="text-center mt-8">
+        <a href="../servers/new" class="btn btn-secondary">Create Another Server</a>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('../components/style') %>
+
+  <style>
+    .btn {
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 14px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+    .btn-secondary {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background-color: #0056b3;
+    }
+    .btn-tertiary {
+      background-color: #6c757d;
+      color: white;
+    }
+    .btn-tertiary:hover {
+      background-color: #5a6268;
+    }
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .alert-close {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .server-card {
+      display: flex;
+      flex-direction: column;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+
+</body>

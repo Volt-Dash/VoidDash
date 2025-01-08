@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= settings.name %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
+  <!-- Dark/Light Mode Toggle -->
+  <div class="fixed top-4 right-4 z-10">
+    <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none">
+      <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-12.36l-.707.707m-15.03 0l-.707-.707m15.03 12.72l-.707-.707m-15.03 0l-.707.707m4.03-11.52l.707-.707m7.07 0l.707.707M21 12a9 9 0 11-9-9 9 9 0 019 9z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <%- include('../components/navigation') %>
+
+  <div class="flex flex-col md:flex-row min-h-screen p-4 sm:p-8">
+    <!-- Sidebar -->
+    <div class="w-full md:w-1/4 lg:w-1/5 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Server Resources</h2>
+      <div class="mt-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">Manage your server resources from here.</p>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mt-6 md:mt-0">
+      <div class="text-center">
+        <h2 class="text-3xl font-semibold text-gray-900 dark:text-gray-100">Create a New Server</h2>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Fill in the details below to create a server.</p>
+      </div>
+
+      <% if (req.query.err) { %>
+        <div class="mt-6 bg-red-50 border-l-4 border-red-500 text-red-700 p-4">
+          <strong>Error:</strong> <code><%= req.query.err %></code>
+        </div>
+      <% } %>
+
+      <% if ((packages ? packages.ram : 0) / 1024 + extraresources.ram / 1024 - ram / 1024 > 0) { %>
+        <form class="mt-6 space-y-6">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-900 dark:text-gray-100">Server Name</label>
+            <input type="text" id="name" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100" placeholder="My Server" required />
+          </div>
+
+          <div>
+            <label for="location" class="block text-sm font-medium text-gray-900 dark:text-gray-100">Location</label>
+            <select id="location" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100">
+              <% for (let [name, value] of Object.entries(settings.api.client.locations)) { %>
+                <option value="<%= name %>">
+                  <%= value.name %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+
+          <div>
+            <label for="egg" class="block text-sm font-medium text-gray-900 dark:text-gray-100">Software</label>
+            <select id="egg" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100">
+              <% for (let [name, value] of Object.entries(settings.api.client.eggs)) { %>
+                <option value="<%= name %>">
+                  <%= value.display %>
+                </option>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label for="cpu" class="block text-sm font-medium text-gray-900 dark:text-gray-100">CPU (Core)</label>
+              <input type="number" id="cpu" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100" value="<%= (packages ? packages.cpu : 0) / 100 + extraresources.cpu / 100 - cpu / 100 %>" placeholder="CPU Cores" required />
+            </div>
+            <div>
+              <label for="ram" class="block text-sm font-medium text-gray-900 dark:text-gray-100">RAM (GB)</label>
+              <input type="number" id="ram" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100" value="<%= (packages ? packages.ram : 0) / 1024 + extraresources.ram / 1024 - ram / 1024 %>" placeholder="RAM (GB)" required />
+            </div>
+            <div>
+              <label for="disk" class="block text-sm font-medium text-gray-900 dark:text-gray-100">Disk (GB)</label>
+              <input type="number" id="disk" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100" value="<%= (packages ? packages.disk : 0) / 1024 + extraresources.disk / 1024 - disk / 1024 %>" placeholder="Disk Space (GB)" required />
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <button type="button" onclick="submitForm()" class="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+              Create Server
+            </button>
+          </div>
+        </form>
+      <% } else { %>
+        <div class="text-center mt-20">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-12 w-12 mx-auto text-yellow-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+          <h3 class="mt-4 text-xl font-semibold text-gray-900 dark:text-gray-100">Insufficient Resources</h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">You need at least 1 GiB of memory to deploy a server.</p>
+          <a href="../servers" class="mt-6 inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+            Back to Servers
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      if (currentTheme === 'dark') {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    // Apply stored theme on page load
+    (function () {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme) {
+        document.documentElement.classList.add(storedTheme);
+      }
+    })();
+
+    function submitForm() {
+      let name = encodeURIComponent(document.getElementById("name").value);
+      let egg = encodeURIComponent(document.getElementById("egg").value);
+      let ram = encodeURIComponent(document.getElementById("ram").value);
+      let disk = encodeURIComponent(document.getElementById("disk").value);
+      let cpu = encodeURIComponent(document.getElementById("cpu").value);
+      let location = encodeURIComponent(document.getElementById("location").value);
+      document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram * 1024}&disk=${disk * 1024}&cpu=${cpu * 100}&location=${location}`;
+    }
+  </script>
+</body>
+
+</html>

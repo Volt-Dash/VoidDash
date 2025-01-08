@@ -1,0 +1,238 @@
+{
+  "name": "VoidDash",
+  "support": "https://discord.gg/XQxPRJ3TGG",
+  
+  "pterodactyl": {
+    "domain": "https://panel.example.com",
+    "apiKey": "Your Pterodactyl API key with all permissions"
+  },
+  
+  "timezone": "Europe/London",
+  "version": "1.0",
+  
+  "website": {
+    "port": 3000,
+    "secret": "Change this to any string you want"
+  },
+  
+  "database": "sqlite://database.sqlite",
+  
+  "api": {
+    "client": {
+      "accountSwitcher": true,
+      "api": {
+        "enabled": true,
+        "code": "Change this to any string you want"
+      },
+      "j4r": {
+        "enabled": false,
+        "ads": []
+      },
+      "bot": {
+        "token": "Your Discord bot token",
+        "joinguild": {
+          "_comment": "The Discord bot must be in these servers and have invite permissions. Automatic guild joining will not work unless role packages are configured correctly.",
+          "enabled": false,
+          "guildId": ["000000000000000000"]
+        },
+        "giverole": {
+          "_comment": "Auto-join must be enabled for this to work, or the user must already be in your Discord. This will give the user a role when they login.",
+          "enabled": false,
+          "guildId": "000000000000000000",
+          "roleId": "000000000000000000"
+        }
+      },
+      "passwordGenerator": {
+        "signup": true,
+        "note": "Use this to disable registering on VoidDash.",
+        "length": 16
+      },
+      "allow": {
+        "newUsers": true,
+        "regen": true,
+        "server": {
+          "create": true,
+          "modify": true,
+          "delete": true
+        },
+        "overResourcesSuspend": false
+      },
+      "oauth2": {
+        "_comment": "Go to https://discord.dev/ and create an application to set up OAuth2. This is required for VoidDash to work. You must also set the redirect URL to the link below.",
+        "id": "Your client ID",
+        "secret": "Your client secret",
+        "link": "http://localhost:3000",
+        "callbackPath": "/callback",
+        "prompt": true,
+        "ip": {
+          "trustXForwardedFor": true,
+          "block": [],
+          "duplicateCheck": false,
+          "_note": "Anti-alt checks will not work if you are proxying through Cloudflare."
+        }
+      },
+      "rateLimits": {
+        "/callback": 2,
+        "/create": 1,
+        "/delete": 1,
+        "/modify": 1,
+        "/updateInfo": 1,
+        "/setPlan": 2,
+        "/admin": 1,
+        "/regen": 1,
+        "/renew": 1,
+        "/api/userInfo": 1
+      },
+      "packages": {
+        "default": "default",
+        "list": {
+          "default": {
+            "ram": 2048,
+            "disk": 5120,
+            "cpu": 100,
+            "servers": 2
+          }
+        },
+        "rolePackages": {
+          "_note": "This allows setting a different plan/package for users with specific roles, requires the Discord bot.",
+          "roleServer": "Discord Server ID",
+          "roles": {
+            "Discord Role ID": "VoidDash package name"
+          }
+        }
+      },
+      "locations": {
+        "1": {
+          "package": null,
+          "name": "Default"
+        }
+      },
+      "eggs": {
+        "paper": {
+          "display": "Paper",
+          "minimum": {
+            "ram": 1024,
+            "disk": 1024,
+            "cpu": 75
+          },
+          "maximum": {
+            "ram": null,
+            "disk": null,
+            "cpu": null
+          },
+          "info": {
+            "egg": 5,
+            "dockerImage": "ghcr.io/pterodactyl/yolks:java_17",
+            "startup": "java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}",
+            "environment": {
+              "SERVER_JARFILE": "server.jar",
+              "BUILD_NUMBER": "latest"
+            },
+            "featureLimits": {
+              "databases": 4,
+              "backups": 4
+            }
+          }
+        },
+        "bungeecord": {
+          "display": "BungeeCord",
+          "minimum": {
+            "ram": 512,
+            "disk": 512,
+            "cpu": 75
+          },
+          "maximum": {
+            "ram": null,
+            "disk": null,
+            "cpu": null
+          },
+          "info": {
+            "egg": 3,
+            "dockerImage": "ghcr.io/pterodactyl/yolks:java_17",
+            "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+            "environment": {
+              "SERVER_JARFILE": "bungeecord.jar",
+              "BUNGEE_VERSION": "latest"
+            },
+            "featureLimits": {
+              "databases": 4,
+              "backups": 4
+            }
+          }
+        }
+      },
+      "coins": {
+        "enabled": true,
+        "store": {
+          "enabled": true,
+          "ram": {
+            "cost": 300,
+            "per": 1024
+          },
+          "disk": {
+            "cost": 100,
+            "per": 1024
+          },
+          "cpu": {
+            "cost": 1000,
+            "per": 100
+          },
+          "servers": {
+            "cost": 250,
+            "per": 1
+          }
+        }
+      }
+    },
+    "afk": {
+      "path": "ws",
+      "every": 60,
+      "coins": 1,
+      "enabled": true
+    }
+  },
+  
+  "antivpn": {
+    "_note": "Generate an API Key on https://proxycheck.io/ to use anti-VPN. If no key is provided, VoidDash disables anti-VPN.",
+    "status": false,
+    "apiKey": "Proxycheck API Key",
+    "whitelistedIPs": [
+      "IP address"
+    ]
+  },
+  
+  "whitelist": {
+    "_note": "This limits login access to the VoidDash dashboard for specific users. Does not affect your Panel.",
+    "status": false,
+    "users": [
+      "User ID"
+    ]
+  },
+  
+  "logging": {
+    "status": false,
+    "webhook": "Webhook URL",
+    "actions": {
+      "user": {
+        "signup": true,
+        "createServer": true,
+        "giftedCoins": true,
+        "modifyServer": true,
+        "buyServers": true,
+        "buyRam": true,
+        "buyCpu": true,
+        "buyDisk": true
+      },
+      "admin": {
+        "setCoins": true,
+        "addCoins": true,
+        "setResources": true,
+        "setPlan": true,
+        "createCoupon": true,
+        "revokeCoupon": true,
+        "removeAccount": true,
+        "viewIP": true
+      }
+    }
+  }
+}

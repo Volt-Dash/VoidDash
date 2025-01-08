@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= settings.name %></title>
+  <%- include('../components/style') %>
+</head>
+
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+
+  <div class="text-center p-8 bg-white rounded-lg shadow-lg">
+    <h1 class="text-6xl font-bold text-gray-800">
+      <span class="text-blue-600 text-7xl">404</span> <br />
+      Oops! Page not found.
+    </h1>
+    <p class="mt-6 text-lg text-gray-600">
+      Sorry, we couldn't find the page you were looking for. But don’t worry, there’s plenty more to explore.
+    </p>
+    <div class="mt-8">
+      <a href="../dashboard">
+        <button
+          class="bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg text-lg transition duration-300 transform hover:scale-105 focus:outline-none">
+          Go Back to Dashboard
+        </button>
+      </a>
+    </div>
+  </div>
+
+</body>
+
+</html>

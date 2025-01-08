@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title><%= settings.name %></title>
+  <style>
+    .mode-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.6);
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .mode-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+  </style>
+</head>
+
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+  <button class="mode-toggle" id="mode-toggle">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M12 3v2m0 14v2m9-7h2m-14 0H3m16.243-7.757l-1.414 1.414M5.171 5.171l-1.414 1.414m14.142 12.728l-1.414-1.414M5.171 18.829l-1.414-1.414" />
+    </svg>
+  </button>
+
+  <section class="grid text-center h-screen items-center p-8">
+    <div class="relative">
+      <h2 class="font-bold absolute left-0 top-0 text-4xl pt-6 pl-4 text-gray-800 dark:text-white">
+        <%= settings.name %>
+      </h2>
+
+      <h3 class="text-4xl font-semibold text-gray-800 dark:text-white mb-4">
+        👋 Welcome!
+      </h3>
+
+      <p class="text-base font-light text-gray-600 dark:text-gray-300 mb-16">
+        Please login or register to continue.
+      </p>
+
+      <form class="mx-auto max-w-[24rem]">
+        <a href="../dashboard">
+          <button
+            class="flex items-center justify-center gap-2 w-full h-12 py-3.5 px-7 rounded-lg text-sm font-bold text-gray-900 border border-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-all"
+            type="button">
+            <img src="/assets/discord.png" alt="discord" class="h-6 w-6" />
+            Sign in with Discord
+          </button>
+        </a>
+
+        <button
+          class="flex items-center justify-center gap-2 w-full h-12 py-3.5 px-7 rounded-lg text-sm font-bold text-gray-900 border border-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-all mt-6"
+          type="button">
+          <img src="/assets/google.png" alt="google" class="h-6 w-6" />
+          Sign in with Google
+        </button>
+      </form>
+
+      <div class="absolute inset-x-0 bottom-0 pb-8">
+        <p class="text-center text-gray-600 dark:text-gray-300">
+          Copyright © <%= new Date().getFullYear(); %> <%= settings.name %> all rights reserved.
+        </p>
+        <p class="text-center text-gray-600 dark:text-gray-300">
+          Powered by <a target="_blank" href="http://flexacp.uk.to/" class="text-blue-500">Flexa</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+    });
+
+    document.onkeydown = function (e) {
+      if (event.keyCode == 123) {
+        return false;
+      }
+
+      if (e.ctrlKey && e.shiftKey && e.keyCode == "I".charCodeAt(0)) {
+        return false;
+      }
+
+      if (e.ctrlKey && e.shiftKey && e.keyCode == "J".charCodeAt(0)) {
+        return false;
+      }
+
+      if (e.ctrlKey && e.keyCode == "V".charCodeAt(0)) {
+        return false;
+      }
+    }
+
+    const modeToggle = document.getElementById('mode-toggle');
+    modeToggle.addEventListener('click', () => {
+      const currentMode = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      if (currentMode === 'dark') {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    // Load stored theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+</body>
+
+</html>
